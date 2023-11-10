@@ -1,11 +1,11 @@
-const User = require("../db/models/user");
+const { USER_MODEL } = require("../db/models");
 const { createToken } = require("../utils");
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const user = await User.signup(username, email, password);
+    const user = await USER_MODEL.signup(username, email, password);
 
     const token = createToken(user._id);
 
@@ -25,7 +25,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.login(email, password);
+    const user = await USER_MODEL.login(email, password);
 
     const token = createToken(user._id);
 

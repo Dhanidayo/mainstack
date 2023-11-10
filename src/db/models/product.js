@@ -1,4 +1,15 @@
 const mongoose = require("mongoose");
+const stringSimilarity = require("string-similarity");
+
+const categoryEnum = [
+  "electronics",
+  "gadgets",
+  "clothing",
+  "books",
+  "cosmetics",
+  "skincare",
+  "other",
+];
 
 const productSchema = new mongoose.Schema(
   {
@@ -17,6 +28,11 @@ const productSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    productId: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     price: {
       type: Number,
       required: true,
@@ -25,7 +41,23 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["Electronics", "Clothing", "Books", "Cosmetics", "Other"],
+      validate: {
+        validator: async function (value) {
+          const lowerCaseValue = value.toLowerCase();
+          const matches = stringSimilarity.findBestMatch(
+            lowerCaseValue,
+            categoryEnum
+          );
+
+          const similarityThreshold = 0.8;
+
+          if (matches.bestMatch.rating >= similarityThreshold) {
+            this.category = matches.bestMatch.target; // Set the correct category
+          } else {
+            this.category = "other";
+          }
+        },
+      },
     },
     stock: {
       type: Number,
@@ -43,11 +75,21 @@ const productSchema = new mongoose.Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
-        delete ret.password;
       },
     },
     timestamps: true,
   }
 );
+
+// Pre-save hook to automatically correct and validate the category value
+productSchema.pre("save", async function (next) {
+  try {
+    await this.validate();
+    next();
+  } catch (error) {
+    next(error);
+  }
+  next();
+});
 
 module.exports = mongoose.model("Product", productSchema);

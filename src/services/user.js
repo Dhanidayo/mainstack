@@ -1,8 +1,8 @@
-const User = require("../db/models/user");
+const { USER_MODEL } = require("../db/models");
 
 class UserService {
   static async getUsers() {
-    const users = await User.find().sort({ _id: -1 });
+    const users = await USER_MODEL.find().sort({ _id: -1 });
 
     if (users.length === 0) {
       throw new Error("No users found");
@@ -12,10 +12,10 @@ class UserService {
   }
 
   static async getUserById(id) {
-    const user = await User.findOne({ _id: id });
+    const user = await USER_MODEL.findOne({ _id: id });
 
     if (!user) {
-      throw Error("No user found");
+      throw new Error("No user found");
     }
     return user;
   }
@@ -26,7 +26,7 @@ class UserService {
     if (!user) {
       throw new Error("Unknown User Id");
     }
-    const updatedUser = await User.findOneAndUpdate(
+    const updatedUser = await USER_MODEL.findOneAndUpdate(
       { _id: id },
       { $set: data },
       { new: true }
@@ -36,7 +36,7 @@ class UserService {
   }
 
   static async deleteUser(id) {
-    const response = await User.deleteOne({ _id: id });
+    const response = await USER_MODEL.deleteOne({ _id: id });
     console.log("Deleted", response);
     if (response.acknowledged === true) {
       return response;
