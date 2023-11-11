@@ -1,5 +1,12 @@
 const UserService = require("../services/user");
 
+/**
+ * @description gets the list of existing users
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const getUsers = async (req, res, next) => {
   try {
     const users = await UserService.getUsers();
@@ -20,6 +27,13 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+/**
+ * @description gets a user
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const getAUser = async (req, res, next) => {
   const userId = req.params.userId;
 
@@ -41,6 +55,13 @@ const getAUser = async (req, res, next) => {
   }
 };
 
+/**
+ * @description updates a user's details
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const updateAUser = async (req, res, next) => {
   const userId = req.params.userId;
 
@@ -62,6 +83,13 @@ const updateAUser = async (req, res, next) => {
   }
 };
 
+/**
+ * @description deletes a user
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const deleteUser = async (req, res, next) => {
   const userId = req.params.userId;
 

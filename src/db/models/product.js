@@ -52,7 +52,7 @@ const productSchema = new mongoose.Schema(
           const similarityThreshold = 0.8;
 
           if (matches.bestMatch.rating >= similarityThreshold) {
-            this.category = matches.bestMatch.target; // Set the correct category
+            this.category = matches.bestMatch.target;
           } else {
             this.category = "other";
           }
@@ -68,6 +68,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    userId: {
+      type: String,
+      required: true,
+    },
   },
   {
     toJSON: {
@@ -81,7 +85,6 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-// Pre-save hook to automatically correct and validate the category value
 productSchema.pre("save", async function (next) {
   try {
     await this.validate();

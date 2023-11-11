@@ -1,6 +1,10 @@
 const { USER_MODEL } = require("../db/models");
 
 class UserService {
+  /**
+   *
+   * @returns a list of all users
+   */
   static async getUsers() {
     const users = await USER_MODEL.find().sort({ _id: -1 });
 
@@ -11,6 +15,11 @@ class UserService {
     return users;
   }
 
+  /**
+   *
+   * @param {*} id
+   * @returns a user object
+   */
   static async getUserById(id) {
     const user = await USER_MODEL.findOne({ _id: id });
 
@@ -20,6 +29,12 @@ class UserService {
     return user;
   }
 
+  /**
+   *
+   * @param {*} data
+   * @param {*} id
+   * @returns an updated user
+   */
   static async updateUser(data, id) {
     const user = await this.getUserById(id);
 
@@ -35,6 +50,11 @@ class UserService {
     return updatedUser;
   }
 
+  /**
+   * @description deletes a user
+   * @param {*} id
+   * @returns
+   */
   static async deleteUser(id) {
     const response = await USER_MODEL.deleteOne({ _id: id });
     console.log("Deleted", response);

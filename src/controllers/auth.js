@@ -9,13 +9,11 @@ const registerUser = async (req, res) => {
 
     const token = createToken(user._id);
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Registration successful",
-        data: { username, email, token },
-      });
+    res.status(200).json({
+      success: true,
+      message: "Registration successful",
+      data: { username, email, token, id: user._id },
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -32,7 +30,7 @@ const login = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
-      data: { email, token },
+      data: { username: user.username, email, token, id: user._id },
     });
   } catch (error) {
     res.status(400).json({ error: error.message });

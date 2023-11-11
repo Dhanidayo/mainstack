@@ -1,6 +1,13 @@
 const ProductService = require("../services/product");
 const { createProductValidator } = require("../utils/validators");
 
+/**
+ * @description creates a new product
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const createProduct = async (req, res, next) => {
   try {
     const isReqValid = createProductValidator(req.body);
@@ -13,6 +20,10 @@ const createProduct = async (req, res, next) => {
         errors: errors,
       });
     }
+
+    //assign userId to new product
+    const userId = req.user._id;
+    req.body.userId = userId;
 
     const data = await ProductService.createProduct(req.body);
 
@@ -39,6 +50,13 @@ const createProduct = async (req, res, next) => {
   }
 };
 
+/**
+ * @description gets the list of existing products
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const getAllProducts = async (req, res, next) => {
   try {
     const data = await ProductService.getProducts();
@@ -59,7 +77,43 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
-const getProduct = async (req, res, next) => {
+/**
+ * @description gets a list of products created by a user
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
+const getUsersProducts = async (req, res, next) => {
+  const userId = req.user._id;
+
+  try {
+    const data = await ProductService.getUsersProducts(userId);
+
+    return res.status(200).json({
+      message: "Success",
+      totalNumberOfProducts: data?.length,
+      data,
+    });
+  } catch (error) {
+    console.error(error);
+    if (error.message === "No products found for user") {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal server error" });
+    }
+    next(error);
+  }
+};
+
+/**
+ * @description gets a product by the given Id
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
+const getProductById = async (req, res, next) => {
   const productId = req.params.productId;
 
   try {
@@ -80,6 +134,13 @@ const getProduct = async (req, res, next) => {
   }
 };
 
+/**
+ * @description gets a product or list of products by a given name
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const getProductsByName = async (req, res, next) => {
   const productName = req.query.name;
 
@@ -101,6 +162,13 @@ const getProductsByName = async (req, res, next) => {
   }
 };
 
+/**
+ * @description updates a product details
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const updateProductDetails = async (req, res, next) => {
   const productId = req.params.productId;
 
@@ -122,15 +190,20 @@ const updateProductDetails = async (req, res, next) => {
   }
 };
 
+/**
+ * @description deletes a product
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ * @returns
+ */
 const deleteProduct = async (req, res, next) => {
   const productId = req.params.productId;
 
   try {
     const response = await ProductService.deleteProduct(productId);
 
-    return res
-      .status(200)
-      .json({ message: "Product deleted successfully" });
+    return res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error(error);
     if (error.message === "No such product") {
@@ -145,7 +218,8 @@ const deleteProduct = async (req, res, next) => {
 module.exports = {
   createProduct,
   getAllProducts,
-  getProduct,
+  getUsersProducts,
+  getProductById,
   getProductsByName,
   updateProductDetails,
   deleteProduct,

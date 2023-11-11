@@ -2,10 +2,16 @@ const { PRODUCT_MODEL } = require("../db/models");
 const { generateUniqueID, formatStringsToLowerCase } = require("../utils");
 
 class ProductService {
+  /**
+   *
+   * @param {*} reqBody
+   * @returns a newly created product
+   */
   static async createProduct(reqBody) {
-    const { name, description, brand, price, stock, imageUrl } = reqBody;
+    const { name, description, brand, price, stock, imageUrl, userId } =
+      reqBody;
 
-    const productExists = PRODUCT_MODEL.find({ name, brand });
+    const productExists = await PRODUCT_MODEL.find({ name, brand });
 
     if (productExists.length > 0) {
       throw new Error(
@@ -28,11 +34,16 @@ class ProductService {
       category,
       stock,
       imageUrl,
+      userId,
     });
 
     return product;
   }
 
+  /**
+   *
+   * @returns a list of all products
+   */
   static async getProducts() {
     const products = await PRODUCT_MODEL.find().sort({ _id: -1 });
 
@@ -43,6 +54,27 @@ class ProductService {
     return products;
   }
 
+  /**
+   *
+   * @param {*} userId
+   * @returns a list of products created by a particular user
+   */
+  static async getUsersProducts(userId) {
+    const products = await PRODUCT_MODEL.find({ userId }).sort({
+      createdAt: -1,
+    });
+
+    if (products.length === 0) {
+      throw new Error("No products found for user");
+    }
+    return products;
+  }
+
+  /**
+   *
+   * @param {*} id
+   * @returns a product
+   */
   static async getProductById(id) {
     const product = await PRODUCT_MODEL.findOne({ productId: id });
 
@@ -52,6 +84,11 @@ class ProductService {
     return product;
   }
 
+  /**
+   *
+   * @param {*} name
+   * @returns a product or list of products that match the given name
+   */
   static async getProductsByName(name) {
     const response = await PRODUCT_MODEL.find({ name }).sort({ _id: -1 });
 
@@ -61,6 +98,12 @@ class ProductService {
     return response;
   }
 
+  /**
+   *
+   * @param {*} id
+   * @param {*} data
+   * @returns an updated product details
+   */
   static async updateProductDetails(id, data) {
     const product = await this.getProductById(id);
 
@@ -76,6 +119,11 @@ class ProductService {
     return updatedProduct;
   }
 
+  /**
+   * @description deletes a product
+   * @param {*} id
+   * @returns
+   */
   static async deleteProduct(id) {
     const response = await PRODUCT_MODEL.findOneAndDelete({ productId: id });
 
