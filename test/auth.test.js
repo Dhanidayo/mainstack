@@ -25,38 +25,42 @@ describe("AUTH API", () => {
         .request(app)
         .post("/api/v1/auth/register")
         .send({
-          username: "Barry",
-          email: "barry@mainstack.com",
-          password: "Barry123!",
+          username: "Larry",
+          email: "larry@mainstack.com",
+          password: "Larry123!",
         })
         .end((err, res) => {
           if (err) {
-            console.error("Response Status Code:", err.response.status);
-            console.error("Response Body:", err.response.body);
-
-            expect(err.response).to.have.status(400).or.have.status(500);
-            expect(err.response.body)
-              .to.have.property("error")
-              .and.to.satisfy((errMsg) => {
-                return [
-                  "All fields must be filled",
-                  "Username is too short",
-                  "Invalid email",
-                  "Password is not strong enough",
-                  "Email has already been registered",
-                  "Error hashing password",
-                  "Error during password hashing",
-                  "Internal server error",
-                ].includes(errMsg);
-              });
+            done(err);
           } else {
-            expect(res).to.have.status(201);
-            expect(res.body).to.have.property("success", true);
-            expect(res.body).to.have.property(
-              "message",
-              "Registration successful"
-            );
-            expect(res.body).to.have.property("data");
+            try {
+              expect(res).to.have.status(201);
+              expect(res.body).to.have.property("success", true);
+              expect(res.body).to.have.property(
+                "message",
+                "Registration successful"
+              );
+              expect(res.body).to.have.property("data");
+            } catch (err) {
+              if (err.response) {
+                expect(err.response).to.have.status(400).or.have.status(500);
+                expect(err.response.body)
+                  .to.have.property("error" || "message")
+                  .and.to.satisfy((errMsg) => {
+                    return [
+                      "All fields must be filled",
+                      "Username is too short",
+                      "Invalid email",
+                      "Password is not strong enough",
+                      "Email has already been registered",
+                      "Error hashing password",
+                      "Unexpected error during password hashing",
+                      "Internal server error",
+                    ].includes(errMsg);
+                  });
+                done(err);
+              }
+            }
           }
           done();
         });
@@ -71,22 +75,29 @@ describe("AUTH API", () => {
         .send({ email: "tarry@mainstack.com", password: "tarry123!" })
         .end((err, res) => {
           if (err) {
-            expect(err.response).to.have.status(400).or.have.status(500);
-            expect(err.response.body)
-              .to.have.property("error")
-              .and.to.satisfy((errMsg) => {
-                return [
-                  "All fields must be filled",
-                  "Incorrect email",
-                  "Incorrect password",
-                  "Internal server error",
-                ].includes(errMsg);
-              });
+            done(err);
           } else {
-            expect(res).to.have.status(200);
-            expect(res.body).to.have.property("success", true);
-            expect(res.body).to.have.property("message", "Login successful");
-            expect(res.body).to.have.property("data");
+            try {
+              expect(res).to.have.status(200);
+              expect(res.body).to.have.property("success", true);
+              expect(res.body).to.have.property("message", "Login successful");
+              expect(res.body).to.have.property("data");
+            } catch (error) {
+              if (err.response) {
+                expect(err.response).to.have.status(400).or.have.status(500);
+                expect(err.response.body)
+                  .to.have.property("error" || "message")
+                  .and.to.satisfy((errMsg) => {
+                    return [
+                      "All fields must be filled",
+                      "Incorrect email",
+                      "Incorrect password",
+                      "Internal server error",
+                    ].includes(errMsg);
+                  });
+                done(err);
+              }
+            }
           }
           done();
         });

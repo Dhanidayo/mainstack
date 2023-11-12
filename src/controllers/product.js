@@ -33,7 +33,6 @@ const createProduct = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    console.error(error);
     if (error.name === "ValidationError") {
       res
         .status(400)
@@ -66,7 +65,6 @@ const getAllProducts = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    console.error(error);
     if (error.message === "No products found") {
       res.status(404).json({ error: error.message });
     } else {
@@ -94,7 +92,6 @@ const getUsersProducts = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    console.error(error);
     if (error.message === "No products found for user") {
       res.status(404).json({ error: error.message });
     } else {
@@ -121,7 +118,6 @@ const getProductById = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    console.error(error);
     if (error.message === "No product found") {
       res.status(404).json({ error: error.message });
     } else {
@@ -148,7 +144,6 @@ const getProductsByName = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    console.error(error);
     if (error.message === "No product(s) match the given name") {
       res.status(404).json({ error: error.message });
     } else {
@@ -169,13 +164,11 @@ const updateProductDetails = async (req, res, next) => {
 
   try {
     const data = await ProductService.updateProductDetails(productId, req.body);
-    console.log("Updated Product", data);
 
     return res
       .status(200)
       .json({ message: "Product details updated successfully", data });
   } catch (error) {
-    console.error(error);
     if (error.message === "Unknown product Id") {
       res.status(404).json({ error: error.message });
     } else {
@@ -199,7 +192,6 @@ const deleteProduct = async (req, res, next) => {
 
     return res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
-    console.error(error);
     if (error.message === "No such product") {
       res.status(404).json({ error: error.message });
     } else {

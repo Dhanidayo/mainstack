@@ -13,8 +13,6 @@ class Middleware {
         (query) => !allowedQueries.includes(query)
       );
 
-      console.log("Query", req.query);
-
       if (invalidQueries.length > 0) {
         return res
           .status(400)

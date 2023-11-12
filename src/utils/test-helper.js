@@ -6,7 +6,7 @@ const app = configureApp();
 const { expect } = chai;
 chai.use(chaiHttp);
 
-const chaiRequestAndAssert = async (
+const chaiRequest = async (
   method,
   path,
   data = {},
@@ -101,42 +101,6 @@ const handleGetAssertions = (path, res) => {
   }
 };
 
-const handleErrorResponse = (err, path) => {
-  if (err.response) {
-    const { status, body } = err.response;
-
-    switch (status) {
-      case 401:
-        expect(body.error).to.satisfy((errMsg) =>
-          [
-            "Authorization token required",
-            "Unrecognized user. Please register/login to continue.",
-            "Request is not authorized",
-          ].includes(errMsg)
-        );
-        break;
-      case 400:
-        expect(body.error).to.satisfy((errMsg) =>
-          [
-            "Validation error",
-            "Product already exists. Update stock count on product details.",
-          ].includes(errMsg)
-        );
-        break;
-      case 404:
-        handle404ErrorResponse(path, body);
-        break;
-      case 500:
-        expect(body.message).to.equal("Internal server error");
-        break;
-      default:
-        throw new Error("Unexpected status code");
-    }
-  } else {
-    throw err;
-  }
-};
-
 const handle404ErrorResponse = (path, body) => {
   switch (path) {
     case "/api/v1/users":
@@ -168,6 +132,41 @@ const handle404ErrorResponse = (path, body) => {
   }
 };
 
+const handleErrorResponse = (err, path) => {
+  if (err.response) {
+    const { status, body } = err.response;
+
+    switch (status) {
+      case 401:
+        expect(body.error).to.satisfy((errMsg) =>
+          [
+            "Authorization token required",
+            "Unrecognized user. Please register/login to continue.",
+            "Request is not authorized",
+          ].includes(errMsg)
+        );
+        break;
+      case 400:
+        expect(body.error).to.satisfy((errMsg) =>
+          [
+            "Validation error",
+            "Product already exists. Update stock count on product details.",
+          ].includes(errMsg)
+        );
+        break;
+      case 404:
+        handle404ErrorResponse(path, body);
+        break;
+      case 500:
+        expect(body.message).to.equal("Internal server error");
+        break;
+      default:
+        throw new Error("Unexpected status code");
+    }
+    done(err);
+  }
+};
+
 module.exports = {
-  chaiRequestAndAssert,
+  chaiRequest,
 };

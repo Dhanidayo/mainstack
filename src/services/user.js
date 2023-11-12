@@ -85,7 +85,7 @@ class UserService {
    */
   static async deleteUser(id) {
     const response = await USER_MODEL.deleteOne({ _id: id });
-    console.log("Deleted", response);
+
     if (response.acknowledged === true && response.deletedCount === 0) {
       throw new Error("No such user");
     }

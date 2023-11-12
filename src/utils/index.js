@@ -44,7 +44,6 @@ module.exports = {
       const hash = await new Promise((resolve, reject) => {
         bcrypt.hash(password, salt, (err, hashedPassword) => {
           if (err) {
-            console.error("Error hashing password:", err);
             reject(new Error("Error hashing password"));
           } else {
             resolve(hashedPassword);
@@ -54,8 +53,7 @@ module.exports = {
 
       return hash;
     } catch (error) {
-      console.error("Unexpected error during password hashing:", error);
-      throw new Error("Error during password hashing");
+      throw new Error("Unexpected error during password hashing");
     }
   },
 };

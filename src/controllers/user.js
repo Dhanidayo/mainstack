@@ -17,7 +17,6 @@ const getUsers = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    console.error(error);
     if (error.message === "No users found") {
       res.status(404).json({ error: error.message });
     } else {
@@ -44,7 +43,6 @@ const getAUser = async (req, res, next) => {
       data,
     });
   } catch (error) {
-    console.error(error);
     if (error.message === "No user found") {
       res.status(404).json({ error: error.message });
     } else {
@@ -65,13 +63,11 @@ const updateAUser = async (req, res, next) => {
 
   try {
     const data = await UserService.updateUser(req.body, userId);
-    console.log("Updated User", data);
 
     return res
       .status(200)
       .json({ message: "User info updated successfully", data });
   } catch (error) {
-    console.error(error);
     if (error.message === "No user found") {
       res.status(404).json({ error: "Unknown User Id" });
     } else {
@@ -97,7 +93,6 @@ const deleteUser = async (req, res, next) => {
       .status(200)
       .json({ message: "User deleted successfully", response });
   } catch (error) {
-    console.error(error);
     if (error.message === "No such user") {
       res.status(404).json({ error: error.message });
     } else {

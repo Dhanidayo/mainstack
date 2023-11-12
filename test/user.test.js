@@ -1,5 +1,5 @@
 const { startServer, closeServer } = require("../server");
-const { chaiRequestAndAssert } = require("../src/utils/test-helper");
+const { chaiRequest } = require("../src/utils/test-helper");
 
 const authToken = process.env.AUTH_TOKEN;
 
@@ -16,7 +16,7 @@ describe("USER API", () => {
 
   describe("GET /api/v1/users", () => {
     it("should fetch all users' data", async () => {
-      await chaiRequestAndAssert(
+      await chaiRequest(
         "get",
         "/api/v1/users",
         {},
@@ -27,9 +27,9 @@ describe("USER API", () => {
 
   describe("GET /api/v1/users/:userId", () => {
     it("should fetch a single user data by Id", async () => {
-      await chaiRequestAndAssert(
+      await chaiRequest(
         "get",
-        "/api/v1/users/6550b2b2ef092baac714098d",
+        "/api/v1/users/6550b18eef092baac714097f",
         {},
         authToken
       );
@@ -44,9 +44,9 @@ describe("USER API", () => {
         password: "Barry2123!",
       };
 
-      await chaiRequestAndAssert(
+      await chaiRequest(
         "put",
-        "/api/v1/users/6550b2b2ef092baac714098d",
+        "/api/v1/users/6550b18eef092baac714097f",
         data,
         authToken
       );
@@ -55,9 +55,9 @@ describe("USER API", () => {
 
   describe("DELETE /api/v1/users/:userId", () => {
     it("should delete a user", async () => {
-      await chaiRequestAndAssert(
+      await chaiRequest(
         "delete",
-        "/api/v1/users/6550b2b2ef092baac714098d",
+        "/api/v1/users/6550b18eef092baac714097f",
         {},
         authToken
       );
