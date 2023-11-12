@@ -1,5 +1,5 @@
 # mainstack
 
-# Setup
+## Setup
 
-* Install Docker
+### Install Docker
