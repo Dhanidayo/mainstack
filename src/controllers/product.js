@@ -44,9 +44,8 @@ const createProduct = async (req, res, next) => {
     ) {
       res.status(400).json({ error: error.message });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -71,9 +70,8 @@ const getAllProducts = async (req, res, next) => {
     if (error.message === "No products found") {
       res.status(404).json({ error: error.message });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -100,9 +98,8 @@ const getUsersProducts = async (req, res, next) => {
     if (error.message === "No products found for user") {
       res.status(404).json({ error: error.message });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -128,9 +125,8 @@ const getProductById = async (req, res, next) => {
     if (error.message === "No product found") {
       res.status(404).json({ error: error.message });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -156,9 +152,8 @@ const getProductsByName = async (req, res, next) => {
     if (error.message === "No product(s) match the given name") {
       res.status(404).json({ error: error.message });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -184,9 +179,8 @@ const updateProductDetails = async (req, res, next) => {
     if (error.message === "Unknown product Id") {
       res.status(404).json({ error: error.message });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -201,7 +195,7 @@ const deleteProduct = async (req, res, next) => {
   const productId = req.params.productId;
 
   try {
-    const response = await ProductService.deleteProduct(productId);
+    await ProductService.deleteProduct(productId);
 
     return res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
@@ -209,9 +203,8 @@ const deleteProduct = async (req, res, next) => {
     if (error.message === "No such product") {
       res.status(404).json({ error: error.message });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
-    next(error);
   }
 };
 

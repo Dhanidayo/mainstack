@@ -6,7 +6,7 @@ const productRoutes = require("./product");
 const router = express.Router();
 
 router.use("/auth", authRoutes);
-router.use("/user", userRoutes);
-router.use("/product", productRoutes);
+router.use("/users", userRoutes);
+router.use("/products", productRoutes);
 
 module.exports = router;

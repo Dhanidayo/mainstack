@@ -13,7 +13,6 @@ const { validateQuery } = require("../middlewares/index");
 
 const router = express.Router();
 
-//require auth for all product routes
 router.use(requireAuth);
 
 const requireQuery = validateQuery(true);

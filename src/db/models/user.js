@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const validator = require("validator");
+const { validateUserInput } = require("../../utils/validators");
+const { hashPassword } = require("../../utils");
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,28 +22,13 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Validation function
-function validateUser(username, email, password) {
+// Static methods
+userSchema.statics.signup = async function (username, email, password) {
   if (!username || !email || !password) {
     throw new Error("All fields must be filled");
   }
 
-  if (username.length <= 2) {
-    throw new Error("Username is too short");
-  }
-
-  if (!validator.isEmail(email)) {
-    throw new Error("Invalid email");
-  }
-
-  if (!validator.isStrongPassword(password)) {
-    throw new Error("Password is not strong enough");
-  }
-}
-
-// Static methods
-userSchema.statics.signup = async function (username, email, password) {
-  validateUser(username, email, password);
+  validateUserInput(username, email, password);
 
   const exists = await this.findOne({ email });
 
@@ -51,15 +37,8 @@ userSchema.statics.signup = async function (username, email, password) {
   }
 
   const salt = await bcrypt.genSalt(10);
-  const hash = await new Promise((resolve, reject) => {
-    bcrypt.hash(password, salt, (err, hashedPassword) => {
-      if (err) {
-        console.trace({ err });
-        reject(new Error("Error hashing password"));
-      }
-      resolve(hashedPassword);
-    });
-  });
+
+  const hash = await hashPassword(password, salt);
 
   const user = await this.create({ username, email, password: hash });
 

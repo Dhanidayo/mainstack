@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   /**
@@ -30,5 +31,31 @@ module.exports = {
       return value.map((item) => item.toLowerCase());
     }
     return value;
+  },
+
+  /**
+   * 
+   * @param {*} password 
+   * @param {*} salt 
+   * @returns a password hash
+   */
+  async hashPassword(password, salt) {
+    try {
+      const hash = await new Promise((resolve, reject) => {
+        bcrypt.hash(password, salt, (err, hashedPassword) => {
+          if (err) {
+            console.error("Error hashing password:", err);
+            reject(new Error("Error hashing password"));
+          } else {
+            resolve(hashedPassword);
+          }
+        });
+      });
+
+      return hash;
+    } catch (error) {
+      console.error("Unexpected error during password hashing:", error);
+      throw new Error("Error during password hashing");
+    }
   },
 };

@@ -92,7 +92,7 @@ class ProductService {
   static async getProductsByName(name) {
     const response = await PRODUCT_MODEL.find({ name }).sort({ _id: -1 });
 
-    if (!response) {
+    if (!response || response.length === 0) {
       throw new Error("No product(s) match the given name");
     }
     return response;

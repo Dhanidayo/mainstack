@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
 
     const token = createToken(user._id);
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "Registration successful",
       data: { username, email, token, id: user._id },

@@ -1,4 +1,5 @@
 const { USER_MODEL } = require("../db/models");
+const { validateUpdatedUserInput } = require("../utils/validators");
 
 class UserService {
   /**
@@ -41,9 +42,36 @@ class UserService {
     if (!user) {
       throw new Error("Unknown User Id");
     }
+
+    const { username, email, password } = data;
+
+    if (!username && !email && !password) {
+      return user;
+    }
+
+    const updatedFields = {};
+
+    if (username !== undefined && username !== "") {
+      updatedFields.username = username;
+    }
+
+    if (email !== undefined && email !== "") {
+      updatedFields.email = email;
+    }
+
+    if (password !== undefined && password !== "") {
+      updatedFields.password = password;
+    }
+
+    await validateUpdatedUserInput(
+      updatedFields.username,
+      updatedFields.email,
+      updatedFields.password
+    );
+
     const updatedUser = await USER_MODEL.findOneAndUpdate(
       { _id: id },
-      { $set: data },
+      { $set: updatedFields },
       { new: true }
     );
 
@@ -58,9 +86,10 @@ class UserService {
   static async deleteUser(id) {
     const response = await USER_MODEL.deleteOne({ _id: id });
     console.log("Deleted", response);
-    if (response.acknowledged === true) {
-      return response;
+    if (response.acknowledged === true && response.deletedCount === 0) {
+      throw new Error("No such user");
     }
+    return response;
   }
 }
 
