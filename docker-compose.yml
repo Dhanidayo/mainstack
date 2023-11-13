@@ -1,6 +1,7 @@
 version: "3.8"
 services:
-  web:
+  app:
+    container_name: mainstack-backend
     build: .
     ports:
       - "9030:9030"

@@ -106,18 +106,32 @@ class ProductService {
    */
   static async updateProductDetails(id, data) {
     const product = await this.getProductById(id);
-
+  
     if (!product) {
       throw new Error("Unknown product Id");
     }
+  
+    if (!data || Object.keys(data).length === 0) {
+      return product;
+    }
+  
+    const fieldsToUpdate = ["name", "description", "brand", "price", "category", "stock", "imageUrl"];
+    const updatedFields = {};
+  
+    fieldsToUpdate.forEach((field) => {
+      updatedFields[field] = data[field] !== undefined && data[field] !== null && data[field] !== ""
+        ? data[field]
+        : product[field];
+    });
+  
     const updatedProduct = await PRODUCT_MODEL.findOneAndUpdate(
       { productId: id },
-      { $set: data },
+      { $set: updatedFields },
       { new: true }
     );
-
+  
     return updatedProduct;
-  }
+  }  
 
   /**
    * @description deletes a product

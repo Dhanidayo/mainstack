@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon -L server.js",
-    "test": "mocha --timeout 30000"
+    "start:dev": "nodemon -L server.js",
+    "test": "mocha --timeout 30000",
+    "start:docker": "./startapp.sh"
   },
   "keywords": [],
   "author": "Sarah Adebesin",
