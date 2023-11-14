@@ -13,9 +13,7 @@
 
     ```zsh or bash
     git clone https://github.com/Dhanidayo/mainstack.git
-    cd your-project
     ```
-
 
 2. **Install Dependencies:**
 
@@ -56,6 +54,6 @@
     To run tests, use:
 
     ```zsh or bash
-    npm test
-
+    npm test or npm run test
+    ```
   
