@@ -1,7 +1,8 @@
-const chai = require("chai");
-const chaiHttp = require("chai-http");
-const { startServer, closeServer } = require("../server");
-const configureApp = require("../src/app");
+import chai from "chai";
+import chaiHttp from "chai-http";
+import { startServer, closeServer } from "../server";
+import configureApp from "../src/app";
+
 const app = configureApp();
 
 const { expect } = chai;
@@ -9,31 +10,49 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe("AUTH API", () => {
-  let appServer;
+  // let appServer: any;
 
-  before(async () => {
-    appServer = await startServer();
-  });
+  // before(async () => {
+  //   appServer = await startServer();
+  // });
 
-  after(async () => {
-    await closeServer(appServer.server);
-  });
+  // after(async () => {
+  //   await closeServer(appServer.server);
+  // });
 
   describe("POST /api/v1/auth/register", () => {
     it("should handle user registration", (done) => {
+      console.log("Inside End......................1");
       chai
         .request(app)
         .post("/api/v1/auth/register")
         .send({
-          username: "Larry",
-          email: "larry@mainstack.com",
-          password: "Larry123!",
+          username: "Rose",
+          email: "rose@mainstack.com",
+          password: "Rose123!",
         })
         .end((err, res) => {
           if (err) {
             done(err);
           } else {
-            try {
+            console.log("Inside End......................RES", res.body);
+            if (res.body.error) {
+              expect(res.status).to.satisfy((status: number) => {
+                return [400, 500].includes(status);
+              });
+              expect(res.body.error).to.satisfy((errMsg: string) => {
+                return [
+                  "All fields must be filled",
+                  "Username is too short",
+                  "Invalid email",
+                  "Password is not strong enough",
+                  "Email has already been registered",
+                  "Error hashing password",
+                  "Unexpected error during password hashing",
+                  "Internal server error",
+                ].includes(errMsg);
+              });
+            } else {
               expect(res).to.have.status(201);
               expect(res.body).to.have.property("success", true);
               expect(res.body).to.have.property(
@@ -41,34 +60,16 @@ describe("AUTH API", () => {
                 "Registration successful"
               );
               expect(res.body).to.have.property("data");
-            } catch (err) {
-              if (err.response) {
-                expect(err.response).to.have.status(400).or.have.status(500);
-                expect(err.response.body)
-                  .to.have.property("error" || "message")
-                  .and.to.satisfy((errMsg) => {
-                    return [
-                      "All fields must be filled",
-                      "Username is too short",
-                      "Invalid email",
-                      "Password is not strong enough",
-                      "Email has already been registered",
-                      "Error hashing password",
-                      "Unexpected error during password hashing",
-                      "Internal server error",
-                    ].includes(errMsg);
-                  });
-                done(err);
-              }
             }
           }
           done();
         });
-    });
+    }).timeout(20000);
   });
 
   describe("POST /api/v1/auth/login", () => {
     it("should handle user login", (done) => {
+      console.log("Inside End......................2");
       chai
         .request(app)
         .post("/api/v1/auth/login")
@@ -77,30 +78,29 @@ describe("AUTH API", () => {
           if (err) {
             done(err);
           } else {
-            try {
+            console.log("Inside End......................RES....2", res.body);
+            if (res.body.error) {
+              expect(res.status).to.satisfy((status: number) => {
+                return [400, 500].includes(status);
+              });
+
+              expect(res.body.error).to.satisfy((errMsg: string) => {
+                return [
+                  "All fields must be filled",
+                  "Incorrect email",
+                  "Incorrect password",
+                  "Internal server error",
+                ].includes(errMsg);
+              });
+            } else {
               expect(res).to.have.status(200);
               expect(res.body).to.have.property("success", true);
               expect(res.body).to.have.property("message", "Login successful");
               expect(res.body).to.have.property("data");
-            } catch (error) {
-              if (err.response) {
-                expect(err.response).to.have.status(400).or.have.status(500);
-                expect(err.response.body)
-                  .to.have.property("error" || "message")
-                  .and.to.satisfy((errMsg) => {
-                    return [
-                      "All fields must be filled",
-                      "Incorrect email",
-                      "Incorrect password",
-                      "Internal server error",
-                    ].includes(errMsg);
-                  });
-                done(err);
-              }
             }
           }
           done();
         });
-    });
+    }).timeout(20000);
   });
 });

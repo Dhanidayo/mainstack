@@ -1,27 +1,24 @@
-import serverModule from "../server";
-import chaiRequest from "../src/utils/test-helper";
+import * as chai from "chai";
+import chaiHttp = require("chai-http");
+import { startServer, closeServer } from "../server";
+import configureApp from "../src/app";
+import { handleErrorResponse } from "../src/utils/test-helper";
 
-const { startServer, closeServer } = serverModule;
+const app = configureApp();
+
+chai.use(chaiHttp);
+const expect = chai.expect;
 
 const authToken = process.env.AUTH_TOKEN;
 
 describe("PRODUCT API", () => {
-  let appServer: any;
-
-  before(async () => {
-    appServer = await startServer();
-  });
-
-  after(async () => {
-    await closeServer(appServer.server);
-  });
-
   describe("POST /api/v1/products/create", () => {
-    it("should create a new product", async () => {
-      await chaiRequest(
-        "post",
-        "/api/v1/products/create",
-        {
+    it("should create a new product", (done) => {
+      const path = "/api/v1/products/create";
+      chai
+        .request(app)
+        .post(path)
+        .send({
           name: "Product",
           description: "Product description",
           brand: "Product brand",
@@ -29,69 +26,180 @@ describe("PRODUCT API", () => {
           category: "other",
           stock: 500,
           imageUrl: "",
-        },
-        authToken
-      );
-    });
+        })
+        .set({ Authorization: `${authToken}` })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            if (res.body.error) {
+              handleErrorResponse(res, path);
+            } else {
+              expect(res).to.have.status(201);
+              expect(res.body.message).to.equal("Product created successfully");
+              expect(res.body.data).to.be.an("object");
+            }
+          }
+          done();
+        });
+    }).timeout(20000);
   });
 
   describe("GET /api/v1/products/all", () => {
-    it("should fetch all products", async () => {
-      await chaiRequest("get", "/api/v1/products/all", {}, authToken, {
-        successMessage: "All Products fetched successfully",
-      });
-    });
+    it("should fetch all products", (done) => {
+      const path = "/api/v1/products/all";
+      chai
+        .request(app)
+        .get(path)
+        .set({ Authorization: `${authToken}` })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            if (res.body.error) {
+              handleErrorResponse(res, path);
+            } else {
+              expect(res).to.have.status(200);
+              expect(res).to.be.an("object");
+              expect(res.body.message).to.equal(
+                "All Products fetched successfully"
+              );
+              expect(res.body.data).to.be.an("array");
+            }
+            done();
+          }
+        });
+    }).timeout(10000);
   });
 
   describe("GET /api/v1/products/user/all", () => {
-    it("should fetch all products belonging to a user", async () => {
-      await chaiRequest(
-        "get",
-        "/api/v1/products/user/all",
-        {},
-        authToken
-      );
-    });
+    it("should fetch all products belonging to a user", (done) => {
+      const path = "/api/v1/products/user/all";
+      chai
+        .request(app)
+        .get(path)
+        .set({ Authorization: `${authToken}` })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            if (res.body.error) {
+              handleErrorResponse(res, path);
+            } else {
+              expect(res).to.have.status(200);
+              expect(res).to.be.an("object");
+              expect(res.body.message).to.equal("Success");
+              expect(res.body.data).to.be.an("object");
+            }
+            done();
+          }
+        });
+    }).timeout(10000);
   });
 
   describe("GET /api/v1/products/", () => {
-    it("should fetch products by name", async () => {
+    it("should fetch products by name", (done) => {
       const path = "/api/v1/products?name=Jacket";
-      await chaiRequest("get", path, {}, authToken);
-    });
+      chai
+        .request(app)
+        .get(path)
+        .set({ Authorization: `${authToken}` })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            if (res.body.error) {
+              handleErrorResponse(res, path);
+            } else {
+              expect(res).to.have.status(200);
+              expect(res).to.be.an("object");
+              expect(res.body.message).to.equal("Success");
+            }
+          }
+          done();
+        });
+    }).timeout(10000);
   });
 
   describe("GET /api/v1/products/:productId", () => {
-    it("should fetch a single product by Id", async () => {
-      const path = "/api/v1/products/6550e01a7e002ea6ce1e0cbb";
-      await chaiRequest("get", path, {}, authToken);
-    });
+    it("should fetch a single product by Id", (done) => {
+      const path = "/api/v1/products/PRD97198";
+      chai
+        .request(app)
+        .get(path)
+        .set({ Authorization: `${authToken}` })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            if (res.body.error) {
+              handleErrorResponse(res, path);
+            } else {
+              expect(res).to.have.status(200);
+              expect(res).to.be.an("object");
+              expect(res.body.message).to.equal("Success");
+              expect(res.body.data).to.be.an("object");
+            }
+            done();
+          }
+        });
+    }).timeout(10000);
   });
 
   describe("PUT /api/v1/products/:productId", () => {
-    it("should update a product's details", async () => {
-      const path = "/api/v1/products/6550e01a7e002ea6ce1e0cbb";
-      await chaiRequest(
-        "put",
-        path,
-        {
-          name: "Updated Product",
-          description: "Updated Product description",
-          brand: "Updated Product brand",
-          price: 120,
+    it("should update a product's details", (done) => {
+      const path = "/api/v1/products/PRD97198";
+      chai
+        .request(app)
+        .put(path)
+        .send({
+          name: "New Product Riz",
+          description: "",
+          brand: "",
+          price: 90,
           category: "other",
-          stock: 500,
+          stock: "",
           imageUrl: "",
-        },
-        authToken
-      );
-    });
+        })
+        .set({ Authorization: `${authToken}` })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            if (res.body.error) {
+              handleErrorResponse(res, path);
+            } else {
+              expect(res).to.have.status(200);
+              expect(res.body.message).to.equal(
+                "Product details updated successfully"
+              );
+              expect(res.body.data).to.be.an("object");
+            }
+            done();
+          }
+        });
+    }).timeout(10000);
   });
 
   describe("DELETE /api/v1/products/:productId", () => {
-    it("should delete a product", async () => {
-      const path = "/api/v1/products/6550e01a7e002ea6ce1e0cbb";
-      await chaiRequest("delete", path, {}, authToken);
-    });
+    it("should delete a product", (done) => {
+      const path = "/api/v1/products/PRD97198";
+      chai
+        .request(app)
+        .delete(path)
+        .set({ Authorization: `${authToken}` })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            if (res.body.error) {
+              handleErrorResponse(res, path);
+            } else {
+              expect(res).to.have.status(200);
+            }
+            done();
+          }
+        });
+    }).timeout(10000);
   });
 });

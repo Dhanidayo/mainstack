@@ -10,12 +10,14 @@
     "resolveJsonModule": true,
     "baseUrl": "./src",
     "outDir": "./dist",
-    "types": ["node", "express"],
+    "types": ["node", "express", "mocha"],
     "lib": ["es2020"],
-    "downlevelIteration": true
+    "downlevelIteration": true,
   },
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Recommended",
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "typeRoots": [
+    "@types",
+    "./node_modules/@types",
+  ]
 }

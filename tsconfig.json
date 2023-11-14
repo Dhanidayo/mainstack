@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "baseUrl": "./src",
     "outDir": "./dist",
-    "types": ["node", "express"],
+    "types": ["node", "express", "mocha"],
     "lib": ["es2020"],
     "downlevelIteration": true,
   },

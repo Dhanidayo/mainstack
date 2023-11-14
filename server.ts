@@ -7,7 +7,7 @@ const port: number = parseInt(process.env.PORT || "9030", 10);
 
 let server: Server;
 
-const startServer = async (): Promise<{ app: Express; server: Server }> => {
+export const startServer = async (): Promise<{ app: Express; server: Server }> => {
   try {
     const app = configureApp();
 
@@ -23,7 +23,7 @@ const startServer = async (): Promise<{ app: Express; server: Server }> => {
   }
 };
 
-const closeServer = async (server: Server | undefined): Promise<void> => {
+export const closeServer = async (server: Server | undefined): Promise<void> => {
   if (server) {
     server.close();
   }
@@ -35,5 +35,3 @@ if (require.main === module) {
     process.exit(1);
   });
 }
-
-export default { startServer, closeServer };
