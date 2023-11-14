@@ -4,7 +4,7 @@
 - [Node.js](https://nodejs.org/)
 - [Docker](https://www.docker.com/)
 
-[Live Link](https://well-loving-rattler.ngrok-free.app/)
+[Live Link](https://mainstack-ts.onrender.com)
 
 
 ## Getting started
@@ -12,7 +12,7 @@
 1. **Clone the repository:**
 
     ```zsh or bash
-    git clone https://github.com/Dhanidayo/mainstack.git
+    git clone https://github.com/Dhanidayo/mainstack-ts.git
     cd your-project
     ```
 
