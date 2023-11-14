@@ -1,5 +1,5 @@
-const express = require("express");
-const {
+import express from 'express';
+import {
   createProduct,
   getAllProducts,
   getProductById,
@@ -7,9 +7,9 @@ const {
   deleteProduct,
   getProductsByName,
   getUsersProducts,
-} = require("../controllers/product");
-const requireAuth = require("../middlewares/auth");
-const { validateQuery } = require("../middlewares/index");
+} from "../controllers/product";
+import {requireAuth} from "../middlewares/auth";
+import { validateQuery } from '../middlewares/index';
 
 const router = express.Router();
 
@@ -25,4 +25,4 @@ router.get("/:productId", getProductById);
 router.put("/:productId", updateProductDetails);
 router.delete("/:productId", deleteProduct);
 
-module.exports = router;
+export default router;

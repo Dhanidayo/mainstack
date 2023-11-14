@@ -1,5 +1,8 @@
-const ProductService = require("../services/product");
-const { createProductValidator } = require("../utils/validators");
+import { Request, Response, NextFunction } from "express";
+import CustomRequest from "../db/interfaces/customRequest";
+import ProductService from "../services/product";
+import { createProductValidator } from "../utils/validators";
+import Product from "../db/interfaces/product";
 
 /**
  * @description creates a new product
@@ -8,31 +11,35 @@ const { createProductValidator } = require("../utils/validators");
  * @param {*} next
  * @returns
  */
-const createProduct = async (req, res, next) => {
+export const createProduct = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const isReqValid = createProductValidator(req.body);
     const errors = createProductValidator.errors;
 
     if (!isReqValid) {
-      return res.status(400).json({
+      res.status(400).json({
         error: true,
         message: "invalid or missing required fields",
         errors: errors,
       });
     }
 
-    //assign userId to new product
-    const userId = req.user._id;
+    // Assign userId to new product
+    const userId: string = req.user._id;
     req.body.userId = userId;
 
     const data = await ProductService.createProduct(req.body);
 
-    return res.status(201).json({
+    res.status(201).json({
       error: false,
       message: "Product created successfully",
       data,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error.name === "ValidationError") {
       res
         .status(400)
@@ -55,16 +62,20 @@ const createProduct = async (req, res, next) => {
  * @param {*} next
  * @returns
  */
-const getAllProducts = async (req, res, next) => {
+export const getAllProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const data = await ProductService.getProducts();
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "All Products fetched successfully",
       totalNumberOfProducts: data?.length,
       data,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === "No products found") {
       res.status(404).json({ error: error.message });
     } else {
@@ -80,18 +91,22 @@ const getAllProducts = async (req, res, next) => {
  * @param {*} next
  * @returns
  */
-const getUsersProducts = async (req, res, next) => {
-  const userId = req.user._id;
+export const getUsersProducts = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const userId: string = req.user._id;
 
   try {
     const data = await ProductService.getUsersProducts(userId);
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Success",
       totalNumberOfProducts: data?.length,
       data,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === "No products found for user") {
       res.status(404).json({ error: error.message });
     } else {
@@ -107,17 +122,21 @@ const getUsersProducts = async (req, res, next) => {
  * @param {*} next
  * @returns
  */
-const getProductById = async (req, res, next) => {
-  const productId = req.params.productId;
+export const getProductById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const productId: string = req.params.productId;
 
   try {
     const data = await ProductService.getProductById(productId);
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Success",
       data,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === "No product found") {
       res.status(404).json({ error: error.message });
     } else {
@@ -133,17 +152,21 @@ const getProductById = async (req, res, next) => {
  * @param {*} next
  * @returns
  */
-const getProductsByName = async (req, res, next) => {
-  const productName = req.query.name;
+export const getProductsByName = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const productName: string | undefined = req.query.name as string | undefined;
 
   try {
     const data = await ProductService.getProductsByName(productName);
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Success",
       data,
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === "No product(s) match the given name") {
       res.status(404).json({ error: error.message });
     } else {
@@ -159,16 +182,23 @@ const getProductsByName = async (req, res, next) => {
  * @param {*} next
  * @returns
  */
-const updateProductDetails = async (req, res, next) => {
-  const productId = req.params.productId;
+export const updateProductDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const productId: string = req.params.productId;
 
   try {
-    const data = await ProductService.updateProductDetails(productId, req.body);
+    const data = await ProductService.updateProductDetails(
+      productId,
+      (req.body as Partial<Product>) || {}
+    );
 
-    return res
+    res
       .status(200)
       .json({ message: "Product details updated successfully", data });
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === "Unknown product Id") {
       res.status(404).json({ error: error.message });
     } else {
@@ -184,28 +214,22 @@ const updateProductDetails = async (req, res, next) => {
  * @param {*} next
  * @returns
  */
-const deleteProduct = async (req, res, next) => {
-  const productId = req.params.productId;
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const productId: string = req.params.productId;
 
   try {
     await ProductService.deleteProduct(productId);
 
-    return res.status(200).json({ message: "Product deleted successfully" });
-  } catch (error) {
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error: any) {
     if (error.message === "No such product") {
       res.status(404).json({ error: error.message });
     } else {
       next(error);
     }
   }
-};
-
-module.exports = {
-  createProduct,
-  getAllProducts,
-  getUsersProducts,
-  getProductById,
-  getProductsByName,
-  updateProductDetails,
-  deleteProduct,
 };

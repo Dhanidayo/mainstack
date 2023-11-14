@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const stringSimilarity = require("string-similarity");
+import mongoose from "mongoose";
+import stringSimilarity from "string-similarity";
+import Product from "../interfaces/product";
 
 const categoryEnum = [
   "electronics",
@@ -11,7 +12,7 @@ const categoryEnum = [
   "other",
 ];
 
-const productSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema<Product>(
   {
     name: {
       type: String,
@@ -42,7 +43,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       validate: {
-        validator: async function (value) {
+        validator: async function (this: any, value: string) {
           const lowerCaseValue = value.toLowerCase();
           const matches = stringSimilarity.findBestMatch(
             lowerCaseValue,
@@ -89,10 +90,12 @@ productSchema.pre("save", async function (next) {
   try {
     await this.validate();
     next();
-  } catch (error) {
+  } catch (error: any) {
     next(error);
   }
   next();
 });
 
-module.exports = mongoose.model("Product", productSchema);
+const ProductModel = mongoose.model<Product>("Product", productSchema);
+
+export default ProductModel;

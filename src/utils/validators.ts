@@ -1,8 +1,13 @@
-const validator = require("validator");
-const Ajv = require("ajv");
+import validator from "validator";
+import Ajv from "ajv";
+
 const ajv = new Ajv();
 
-const validateUserInput = async (username, email, password) => {
+export const validateUserInput = async (
+  username: string,
+  email: string,
+  password: string
+) => {
   if (username.length <= 2) {
     throw new Error("Username is too short");
   }
@@ -16,7 +21,11 @@ const validateUserInput = async (username, email, password) => {
   }
 };
 
-const validateUpdatedUserInput = async (username, email, password) => {
+export const validateUpdatedUserInput = async (
+  username: string | undefined,
+  email: string | undefined,
+  password: string | undefined
+) => {
   if (username && username.length <= 2) {
     throw new Error("Username is too short");
   }
@@ -30,7 +39,7 @@ const validateUpdatedUserInput = async (username, email, password) => {
   }
 };
 
-const createProductValidator = ajv.compile({
+export const createProductValidator = ajv.compile({
   type: "object",
   properties: {
     name: { type: "string" },
@@ -45,8 +54,3 @@ const createProductValidator = ajv.compile({
   additionalProperties: false,
 });
 
-module.exports = {
-  validateUserInput,
-  validateUpdatedUserInput,
-  createProductValidator,
-};

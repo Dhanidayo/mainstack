@@ -1,10 +1,12 @@
-const { startServer, closeServer } = require("../server");
-const { chaiRequest } = require("../src/utils/test-helper");
+import serverModule from "../server";
+import chaiRequest from "../src/utils/test-helper";
+
+const { startServer, closeServer } = serverModule;
 
 const authToken = process.env.AUTH_TOKEN;
 
 describe("PRODUCT API", () => {
-  let appServer;
+  let appServer: any;
 
   before(async () => {
     appServer = await startServer();

@@ -1,11 +1,11 @@
-const express = require("express");
-const {
+import express from 'express';
+import {
   getAUser,
   updateAUser,
   deleteUser,
   getUsers,
-} = require("../controllers/user");
-const requireAuth = require("../middlewares/auth");
+} from "../controllers/user";
+import { requireAuth } from '../middlewares/auth';
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.get("/:userId", getAUser);
 router.put("/:userId", updateAUser);
 router.delete("/:userId", deleteUser);
 
-module.exports = router;
+export default router;

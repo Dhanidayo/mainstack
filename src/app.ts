@@ -1,14 +1,13 @@
 require("./config");
-const express = require("express");
-const connectDB = require("./config/db-config");
-const apiv1Routes = require("./routes/index");
+import express, { Request, Response, NextFunction } from 'express';
+import apiv1Routes from "./routes/index";
 
 const app = express();
 
 const configureApp = () => {
   //middleware
   app.use(express.json());
-  app.use((req, res, next) => {
+  app.use((req, _res, next) => {
     console.log(req.path, req.method);
     next();
   });
@@ -16,7 +15,7 @@ const configureApp = () => {
   //routes
   app.use("/api/v1", apiv1Routes);
 
-  app.use((err, req, res, next) => {
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     if (err) {
       res.status(500).json({
         status: err.status,
@@ -25,7 +24,7 @@ const configureApp = () => {
     }
   });
 
-  app.get("/", (req, res) => {
+  app.get("/", (_req, res) => {
     res.send(
       "Welcome to Sarah Adebesin's Backend Engineer Test for MainStack."
     );
@@ -34,4 +33,4 @@ const configureApp = () => {
   return app;
 };
 
-module.exports = configureApp;
+export default configureApp;

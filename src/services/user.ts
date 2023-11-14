@@ -1,13 +1,14 @@
-const { USER_MODEL } = require("../db/models");
-const { validateUpdatedUserInput } = require("../utils/validators");
+import { User } from "../db/interfaces/user";
+import UserModel from "../db/models/user";
+import { validateUpdatedUserInput } from "../utils/validators";
 
 class UserService {
   /**
    *
    * @returns a list of all users
    */
-  static async getUsers() {
-    const users = await USER_MODEL.find().sort({ _id: -1 });
+  static async getUsers(): Promise<User[]> {
+    const users = await UserModel.find().sort({ _id: -1 });
 
     if (users.length === 0) {
       throw new Error("No users found");
@@ -21,8 +22,8 @@ class UserService {
    * @param {*} id
    * @returns a user object
    */
-  static async getUserById(id) {
-    const user = await USER_MODEL.findOne({ _id: id });
+  static async getUserById(id: string): Promise<User | null> {
+    const user = await UserModel.findOne({ _id: id });
 
     if (!user) {
       throw new Error("No user found");
@@ -36,7 +37,10 @@ class UserService {
    * @param {*} id
    * @returns an updated user
    */
-  static async updateUser(data, id) {
+  static async updateUser(
+    data: Partial<User>,
+    id: string
+  ): Promise<User | null> {
     const user = await this.getUserById(id);
 
     if (!user) {
@@ -49,7 +53,7 @@ class UserService {
       return user;
     }
 
-    const updatedFields = {};
+    const updatedFields: Partial<User> = {};
 
     if (username !== undefined && username !== "") {
       updatedFields.username = username;
@@ -63,13 +67,14 @@ class UserService {
       updatedFields.password = password;
     }
 
+    // Validate updated user input
     await validateUpdatedUserInput(
       updatedFields.username,
       updatedFields.email,
       updatedFields.password
     );
 
-    const updatedUser = await USER_MODEL.findOneAndUpdate(
+    const updatedUser = await UserModel.findOneAndUpdate(
       { _id: id },
       { $set: updatedFields },
       { new: true }
@@ -83,14 +88,15 @@ class UserService {
    * @param {*} id
    * @returns
    */
-  static async deleteUser(id) {
-    const response = await USER_MODEL.deleteOne({ _id: id });
+  static async deleteUser(id: string): Promise<any | null> {
+    const response = await UserModel.deleteOne({ _id: id });
 
-    if (response.acknowledged === true && response.deletedCount === 0) {
+    if (response.acknowledged && response.deletedCount === 0) {
       throw new Error("No such user");
     }
-    return response;
+
+    return response.deletedCount === 1 ? response : null;
   }
 }
 
-module.exports = UserService;
+export default UserService;
