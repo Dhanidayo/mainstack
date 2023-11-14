@@ -12,7 +12,7 @@
 1. **Clone the repository:**
 
     ```zsh or bash
-    git clone https://github.com/Dhanidayo/mainstack-ts.git
+    git clone https://github.com/Dhanidayo/mainstack.git
     cd your-project
     ```
 

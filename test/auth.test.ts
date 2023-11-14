@@ -35,7 +35,10 @@ describe("AUTH API", () => {
           if (err) {
             done(err);
           } else {
-            console.log("Inside End......................RES", res.body);
+            console.log("Inside End......................RES", {
+              status: res.status,
+              body: res.body,
+            });
             if (res.body.error) {
               expect(res.status).to.satisfy((status: number) => {
                 return [400, 500].includes(status);
@@ -78,7 +81,10 @@ describe("AUTH API", () => {
           if (err) {
             done(err);
           } else {
-            console.log("Inside End......................RES....2", res.body);
+            console.log("Inside End......................RES....2", {
+              status: res.status,
+              body: res.body,
+            });
             if (res.body.error) {
               expect(res.status).to.satisfy((status: number) => {
                 return [400, 500].includes(status);
