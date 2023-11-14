@@ -10,19 +10,8 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe("AUTH API", () => {
-  // let appServer: any;
-
-  // before(async () => {
-  //   appServer = await startServer();
-  // });
-
-  // after(async () => {
-  //   await closeServer(appServer.server);
-  // });
-
   describe("POST /api/v1/auth/register", () => {
     it("should handle user registration", (done) => {
-      console.log("Inside End......................1");
       chai
         .request(app)
         .post("/api/v1/auth/register")
@@ -35,10 +24,6 @@ describe("AUTH API", () => {
           if (err) {
             done(err);
           } else {
-            console.log("Inside End......................RES", {
-              status: res.status,
-              body: res.body,
-            });
             if (res.body.error) {
               expect(res.status).to.satisfy((status: number) => {
                 return [400, 500].includes(status);
@@ -72,7 +57,6 @@ describe("AUTH API", () => {
 
   describe("POST /api/v1/auth/login", () => {
     it("should handle user login", (done) => {
-      console.log("Inside End......................2");
       chai
         .request(app)
         .post("/api/v1/auth/login")
@@ -81,10 +65,6 @@ describe("AUTH API", () => {
           if (err) {
             done(err);
           } else {
-            console.log("Inside End......................RES....2", {
-              status: res.status,
-              body: res.body,
-            });
             if (res.body.error) {
               expect(res.status).to.satisfy((status: number) => {
                 return [400, 500].includes(status);
