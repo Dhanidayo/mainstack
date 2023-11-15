@@ -54,6 +54,11 @@
     To run tests, use:
 
     ```zsh or bash
-    npm test or npm run test
+    npm test
+    ```
+    or
+
+     ```zsh or bash
+   npm run test
     ```
   
