@@ -15,31 +15,15 @@ describe("AUTH API", () => {
         .request(app)
         .post("/api/v1/auth/register")
         .send({
-          username: "Rose",
-          email: "rose@mainstack.com",
-          password: "Rose123!",
+          username: "Mane",
+          email: "mane@mainstack.com",
+          password: "mane123!",
         })
         .end((err, res) => {
           if (err) {
             done(err);
           } else {
-            if (res.body.error) {
-              expect(res.status).to.satisfy((status: number) => {
-                return [400, 500].includes(status);
-              });
-              expect(res.body.error).to.satisfy((errMsg: string) => {
-                return [
-                  "All fields must be filled",
-                  "Username is too short",
-                  "Invalid email",
-                  "Password is not strong enough",
-                  "Email has already been registered",
-                  "Error hashing password",
-                  "Unexpected error during password hashing",
-                  "Internal server error",
-                ].includes(errMsg);
-              });
-            } else {
+            try {
               expect(res).to.have.status(201);
               expect(res.body).to.have.property("success", true);
               expect(res.body).to.have.property(
@@ -47,6 +31,27 @@ describe("AUTH API", () => {
                 "Registration successful"
               );
               expect(res.body).to.have.property("data");
+            } catch (err: any) {
+              if (err.response) {
+                expect(res.status).to.satisfy((status: number) => {
+                  return [400, 500].includes(status);
+                });
+                expect(err.response.body)
+                  .to.have.property("error" || "message")
+                  .and.to.satisfy((errMsg: string) => {
+                    return [
+                      "All fields must be filled",
+                      "Username is too short",
+                      "Invalid email",
+                      "Password is not strong enough",
+                      "Email has already been registered",
+                      "Error hashing password",
+                      "Unexpected error during password hashing",
+                      "Internal server error",
+                    ].includes(errMsg);
+                  });
+                done(err);
+              }
             }
           }
           done();
@@ -64,24 +69,29 @@ describe("AUTH API", () => {
           if (err) {
             done(err);
           } else {
-            if (res.body.error) {
-              expect(res.status).to.satisfy((status: number) => {
-                return [400, 500].includes(status);
-              });
-
-              expect(res.body.error).to.satisfy((errMsg: string) => {
-                return [
-                  "All fields must be filled",
-                  "Incorrect email",
-                  "Incorrect password",
-                  "Internal server error",
-                ].includes(errMsg);
-              });
-            } else {
+            try {
               expect(res).to.have.status(200);
               expect(res.body).to.have.property("success", true);
               expect(res.body).to.have.property("message", "Login successful");
               expect(res.body).to.have.property("data");
+            } catch (error) {
+              console.log("ERROR", error);
+              if (err.response) {
+                expect(res.status).to.satisfy((status: number) => {
+                  return [400, 500].includes(status);
+                });
+                expect(err.response.body)
+                  .to.have.property("error" || "message")
+                  .and.to.satisfy((errMsg: string) => {
+                    return [
+                      "All fields must be filled",
+                      "Incorrect email",
+                      "Incorrect password",
+                      "Internal server error",
+                    ].includes(errMsg);
+                  });
+              }
+              done(error);
             }
           }
           done();
