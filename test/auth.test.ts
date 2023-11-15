@@ -90,8 +90,8 @@ describe("AUTH API", () => {
                       "Internal server error",
                     ].includes(errMsg);
                   });
+                done(err);
               }
-              done(error);
             }
           }
           done();
