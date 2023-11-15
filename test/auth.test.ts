@@ -75,7 +75,6 @@ describe("AUTH API", () => {
               expect(res.body).to.have.property("message", "Login successful");
               expect(res.body).to.have.property("data");
             } catch (error) {
-              console.log("ERROR", error);
               if (err.response) {
                 expect(res.status).to.satisfy((status: number) => {
                   return [400, 500].includes(status);
