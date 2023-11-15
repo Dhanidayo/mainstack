@@ -1,6 +1,5 @@
 import chai from "chai";
 import chaiHttp from "chai-http";
-import { startServer, closeServer } from "../server";
 import configureApp from "../src/app";
 
 const app = configureApp();

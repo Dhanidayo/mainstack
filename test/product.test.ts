@@ -1,6 +1,5 @@
 import * as chai from "chai";
 import chaiHttp = require("chai-http");
-import { startServer, closeServer } from "../server";
 import configureApp from "../src/app";
 import { handleErrorResponse } from "../src/utils/test-helper";
 
