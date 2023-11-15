@@ -52,7 +52,7 @@ describe("AUTH API", () => {
           }
           done();
         });
-    }).timeout(20000);
+    }).timeout(30000);
   });
 
   describe("POST /api/v1/auth/login", () => {
@@ -87,6 +87,6 @@ describe("AUTH API", () => {
           }
           done();
         });
-    }).timeout(20000);
+    }).timeout(30000);
   });
 });

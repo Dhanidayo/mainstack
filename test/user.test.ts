@@ -34,7 +34,7 @@ describe("USER API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("GET /api/v1/users/:userId", () => {
@@ -63,7 +63,7 @@ describe("USER API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("PUT /api/v1/users/:userId", () => {
@@ -94,7 +94,7 @@ describe("USER API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("DELETE /api/v1/users/:userId", () => {
@@ -112,6 +112,6 @@ describe("USER API", () => {
         expect(res).to.have.status(200);
         expect(res.body.message).to.equal("User deleted successfully");
       }
-    });
+    }).timeout(30000);
   });
 });

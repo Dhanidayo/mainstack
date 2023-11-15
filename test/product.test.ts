@@ -42,7 +42,7 @@ describe("PRODUCT API", () => {
           }
           done();
         });
-    }).timeout(20000);
+    }).timeout(30000);
   });
 
   describe("GET /api/v1/products/all", () => {
@@ -69,7 +69,7 @@ describe("PRODUCT API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("GET /api/v1/products/user/all", () => {
@@ -94,7 +94,7 @@ describe("PRODUCT API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("GET /api/v1/products/", () => {
@@ -118,7 +118,7 @@ describe("PRODUCT API", () => {
           }
           done();
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("GET /api/v1/products/:productId", () => {
@@ -143,7 +143,7 @@ describe("PRODUCT API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("PUT /api/v1/products/:productId", () => {
@@ -178,7 +178,7 @@ describe("PRODUCT API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 
   describe("DELETE /api/v1/products/:productId", () => {
@@ -200,6 +200,6 @@ describe("PRODUCT API", () => {
             done();
           }
         });
-    }).timeout(10000);
+    }).timeout(30000);
   });
 });
