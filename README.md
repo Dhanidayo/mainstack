@@ -1,4 +1,4 @@
-# mainstack backend test
+# mainstack BET
 
 ## Prerequisites
 - [Node.js](https://nodejs.org/)
